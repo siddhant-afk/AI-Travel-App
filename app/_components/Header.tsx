@@ -1,5 +1,7 @@
+"use client";
+
 import { Button } from '@/components/ui/button'
-import { SignInButton } from '@clerk/nextjs'
+import { SignInButton, useUser } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -18,13 +20,14 @@ const menuOptions = [
 ]
 function Header() {
     
+    const {user} = useUser();
   return (
     <div className='flex justify-between items-center p-4'>
       {/* Logo  */}
       <div className="flex gap-2 items-center">
 
       <Image src={"/logo.svg"} alt="Logo" width={30} height={30} />
-      <h2 className="font-bold text-2xl">ventara</h2>
+      <h2 className="font-bold text-2xl">ventura</h2>
       </div>
 
       {/* Menu Options */}
@@ -37,10 +40,14 @@ function Header() {
       </div>
 
       {/* Get Started Button */}
-      <SignInButton mode='modal'>
-
+    {!user?  <SignInButton mode='modal'>
+       
       <Button>Get Started</Button>
-      </SignInButton>
+      </SignInButton>: 
+      <Link href={"/create-trip"}>
+      <Button>Create New Trip</Button>
+      </Link>
+      }
     </div>
   )
 }

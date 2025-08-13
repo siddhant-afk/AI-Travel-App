@@ -21,6 +21,7 @@ const menuOptions = [
 function Header() {
     
     const {user} = useUser();
+    
   return (
     <div className='flex justify-between items-center p-4'>
       {/* Logo  */}
@@ -44,7 +45,7 @@ function Header() {
        
       <Button>Get Started</Button>
       </SignInButton>: 
-      <Link href={"/create-trip"}>
+      <Link href={"/create-new-trip"}>
       <Button>Create New Trip</Button>
       </Link>
       }

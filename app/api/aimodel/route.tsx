@@ -15,8 +15,6 @@ const PROMPT = `You are an AI Trip Planner Agent. Your goal is to help the user 
 3. Group size (Solo, Couple, Family, Friends) 
 4. Budget (Low, Medium, High) 
 5. Trip duration (number of days) 
-6. Travel interests (e.g., adventure, sightseeing, cultural, food, nightlife, relaxation) 
-7. Special requirements or preferences (if any)
 Do not ask multiple questions at once, and never ask irrelevant questions.
 If any answer is missing or unclear, politely ask the user to clarify before proceeding.
 Always maintain a conversational, interactive style while asking questions.
@@ -41,7 +39,7 @@ export async function POST(req: NextRequest) {
 
         
         const completion = await openai.chat.completions.create({
-            model: 'gpt-5',
+            model: 'gpt-4.1',
             response_format : {type : 'json_object'},
             messages: [
 

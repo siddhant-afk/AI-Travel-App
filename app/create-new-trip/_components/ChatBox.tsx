@@ -7,6 +7,8 @@ import React, { useState } from 'react'
 import EmptyBoxState from "./EmptyBoxState";
 import GroupSizeUI from "./GroupSizeUI";
 import BudgetUI from "./BudgetUI";
+import TripDuration from "./TripDurationUI";
+import FinalUI from "./FinalUI";
 
 
 type Message = {
@@ -65,6 +67,14 @@ function ChatBox() {
         else if(ui == 'groupSize'){
             // Group Size UI Component
             return <GroupSizeUI onSelectedOption = {(v:string) => {setUserInput(v); onSend()}} />
+        }
+        else if(ui == "tripDuration"){
+            // Trip Duration UI Component
+            return <TripDuration onSelectedOption = {(v:string) => {setUserInput(v); onSend()}} />
+        }
+        else if(ui =="final"){
+            // Group Size UI Component
+            return <FinalUI viewTrip = {() => console.log()} />
         }
 
 

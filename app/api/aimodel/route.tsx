@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 const openai = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey:  process.env.OPENROUTER_API_KEY,
+  apiKey:  process.env.OPENAI_API_KEY,
 
 });
 
@@ -21,14 +20,14 @@ const PROMPT = `You are an AI Trip Planner Agent. Your goal is to help the user 
 Do not ask multiple questions at once, and never ask irrelevant questions.
 If any answer is missing or unclear, politely ask the user to clarify before proceeding.
 Always maintain a conversational, interactive style while asking questions.
-Along wth response also send which ui component to display for generative UI for example 'budget/groupSize/TripDuration/Final) , where Final means AI generating complete final outpur
+Along wth response also send which ui component to display for generative UI for example 'budget/groupSize/tripDuration/final) , where Final means AI generating complete final outpur
 Once all required information is collected, generate and return a **strict JSON response only** (no explanations or extra text) with following JSON schema:
 
 {
 
 resp:'Text Resp',
 
-ui:'budget/groupSize/TripDuration/Final)'
+ui:'budget/groupSize/tripDuration/final)'
 
 }
 
@@ -42,7 +41,7 @@ export async function POST(req: NextRequest) {
 
         
         const completion = await openai.chat.completions.create({
-            model: 'google/gemini-2.5-flash-lite',
+            model: 'gpt-5',
             response_format : {type : 'json_object'},
             messages: [
 

@@ -17,10 +17,10 @@ const [userDetails,setUserDetails] = useState<any>();
     const {user} = useUser();
 
     useEffect(() => {
-        user && CreatNewUser();
+        user && CreateNewUser();
     }, [user])
 
-    const CreatNewUser = async () =>{
+    const CreateNewUser = async () =>{
 
         if(user){
         const result = await CreateUser({

@@ -3,18 +3,33 @@ import axios from "axios";
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Loader, Send } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import EmptyBoxState from "./EmptyBoxState";
 import GroupSizeUI from "./GroupSizeUI";
 import BudgetUI from "./BudgetUI";
 import TripDuration from "./TripDurationUI";
 import FinalUI from "./FinalUI";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useUserDetail } from "@/app/provider";
+import { v4 as uuidv4 } from 'uuid';
 
 
 type Message = {
  role : string,
  content : string
  ui?: string
+}
+
+export type TripInfo ={
+
+    budget : string,
+    destination : string,
+    duration : string,
+    group_size : string,
+    origin : string,
+    hotels : any,
+    itinerary : any
 }
 
 function ChatBox() {
@@ -24,7 +39,16 @@ function ChatBox() {
 
     const [loading,setLoading] = useState(false);
 
+    const [isFinal,setIsFinal] = useState(false);
+    const [triggerSend, setTriggerSend] = useState(false);
 
+    const [tripDetails,setTripDetails] = useState<TripInfo>();
+
+    const saveTripDetail = useMutation(api.tripDetail.CreateTripDetail);
+
+    const {userDetails,setUserDetails} = useUserDetail();
+
+    
     const onSend = async () =>{
       
         if(!userInput?.trim()) return;
@@ -43,47 +67,93 @@ function ChatBox() {
         setMessages((prev:Message[]) => [...prev, newMessage]);
 
         const result = await axios.post('api/aimodel', {
-            messages : [...messages,newMessage]
+            messages : [...messages,newMessage],
+            isFinal : isFinal
         });
 
-        setMessages((prev : Message[]) => [...prev, {
+        console.log("TRIP" ,result.data);
+
+       !isFinal && setMessages((prev : Message[]) => [...prev, {
             role : 'assistant',
             content : result?.data?.resp,
             ui : result?.data?.ui
         }])
 
-        console.log(result.data)
+        if(isFinal){
+    
+            
+            setTripDetails(result?.data?.trip_plan);
+            const tripId = uuidv4();
+            await saveTripDetail({
+                tripDetail :result?.data?.trip_plan,
+                tripId : tripId,
+                uid:userDetails?._id
+            })
+        }
+        
 
         setLoading(false);
 
     }
 
+    useEffect(() => {
+  if (triggerSend && userInput && !loading) {
+    onSend();
+    setTriggerSend(false); // reset
+  }
+}, [triggerSend, userInput, loading]);
+
+const handleUIOptionSelect = (v: string) => {
+  setUserInput(v);
+  setTriggerSend(true);
+};
+
+
     const RenderGenerativeUI = (ui : string) => {
 
         if (ui == 'budget'){
             // Budget  UI Component
-            return <BudgetUI onSelectedOption = {(v:string) => {setUserInput(v);setTimeout(() => onSend(), 0); }} />
+            return <BudgetUI onSelectedOption = {handleUIOptionSelect} />
         }
         else if(ui == 'groupSize'){
             // Group Size UI Component
-            return <GroupSizeUI onSelectedOption = {(v:string) => {setUserInput(v); onSend()}} />
+            return <GroupSizeUI onSelectedOption = {handleUIOptionSelect} />
         }
         else if(ui == "tripDuration"){
             // Trip Duration UI Component
-            return <TripDuration onSelectedOption = {(v:string) => {setUserInput(v); onSend()}} />
+            return <TripDuration onSelectedOption = {handleUIOptionSelect} />
         }
         else if(ui =="final"){
             // Group Size UI Component
-            return <FinalUI viewTrip = {() => console.log()} />
+            return <FinalUI viewTrip = {() => console.log()} disable = {!tripDetails} />
         }
 
 
         return null
     }
+
+    useEffect(() => {
+
+        const lastMessage = messages[messages.length-1];
+        if(lastMessage?.ui=='final'){
+            setIsFinal(true);
+            setUserInput('Ok, Great!');
+            
+        }
+    },[messages]);
+
+
+
+    useEffect(() =>{
+        if(isFinal && userInput){
+            onSend();
+        }
+    }, [isFinal]);
+
   return (
     <div className='h-[85vh] flex flex-col'>
         { messages?.length === 0 && 
-        <EmptyBoxState onSelectOption = {(v:string) => {setUserInput(v) ;  onSend();}}/>
+        <EmptyBoxState onSelectOption = {handleUIOptionSelect}/>
 
         
     }

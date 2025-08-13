@@ -30,6 +30,7 @@ export const CreateNewUser = mutation({
             // Create new user
             const result = await ctx.db.insert('UserTable', userData);
             return userData;
+        
         }
        
         // If user already exists

@@ -1,4 +1,6 @@
+import { currentUser } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { aj } from '../arcjet/route';
 import OpenAI from 'openai';
 const openai = new OpenAI({
   apiKey:  process.env.OPENAI_API_KEY,
@@ -132,6 +134,19 @@ Hotel address, Price, hotel image url, geo coordinates, rating, descriptions and
 export async function POST(req: NextRequest) {
     
     const {messages,isFinal} = await req.json();
+
+     const user = await currentUser();
+
+    const decision = await aj.protect(req, { userId:user?.primaryEmailAddress?.emailAddress ?? '', requested: isFinal ? 5 : 0 }); 
+
+    console.log(decision);
+
+    if(decision?.reason?.remaining == 0){
+      return NextResponse.json({
+        resp : 'No Free Credit Remaining',
+        ui : 'limit'
+      })
+    }
 
     try{
 

@@ -35,7 +35,7 @@ function PlaceCardItem({ activity} : Props) {
   return (
        <div>
 
-        <div className="relative w-full w-full h-48">
+        <div className="relative w-full  h-48">
 <Image src={ photoUrl || '/placeholder.jpg'}
                   
                     alt={activity.place_name}

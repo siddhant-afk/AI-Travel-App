@@ -1,4 +1,4 @@
-import { currentUser } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { aj } from '../arcjet/route';
 import OpenAI from 'openai';
@@ -137,11 +137,14 @@ export async function POST(req: NextRequest) {
 
      const user = await currentUser();
 
+     const {has} = await auth();
+const hasPremiumAccess = has({ plan: 'monthly' })
+console.log(hasPremiumAccess)
     const decision = await aj.protect(req, { userId:user?.primaryEmailAddress?.emailAddress ?? '', requested: isFinal ? 5 : 0 }); 
 
     console.log(decision);
 
-    if(decision?.reason?.remaining == 0){
+    if(decision?.reason?.remaining == 0 && !hasPremiumAccess){
       return NextResponse.json({
         resp : 'No Free Credit Remaining',
         ui : 'limit'

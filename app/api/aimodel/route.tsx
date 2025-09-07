@@ -143,7 +143,7 @@ console.log(hasPremiumAccess)
     const decision = await aj.protect(req, { userId:user?.primaryEmailAddress?.emailAddress ?? '', requested: isFinal ? 5 : 0 }); 
 
     console.log(decision);
-
+    // @ts-ignore
     if(decision?.reason?.remaining == 0 && !hasPremiumAccess){
       return NextResponse.json({
         resp : 'No Free Credit Remaining',

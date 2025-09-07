@@ -22,7 +22,8 @@ function page() {
 { activeIndex == 0 ? <Itinerary /> : <GlobalMap/> }
 
 <Button size={'lg'}
-className='absolute bottom-10 right-[5%]' >
+className='absolute bottom-10 right-[5%]'
+onClick={() => setActiveIndex(activeIndex == 0 ? 1 : 0)} >
 {activeIndex == 0 ? <Plane/> :  <Globe2 />}
 </Button>
 </div>

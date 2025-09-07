@@ -227,6 +227,7 @@ function Itinerary() {
         </div>
       ),
     },
+    // @ts-ignore
    ...tripData?.itinerary.map((dayData) => ({
     title : `Day ${dayData?.day}`,
     content : (
@@ -234,8 +235,10 @@ function Itinerary() {
             <p> Best Time : {dayData?.best_time_to_visit_day}</p>
 
 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-
-            {dayData?.activities.map((activity,index) => (
+         
+         
+            { // @ts-ignore
+            dayData?.activities.map((activity,index) => (
              <PlaceCardItem activity={activity} key={index} />
             ))}
             </div>

@@ -55,6 +55,10 @@ tripDetailsInfo && tripDetailsInfo?.itinerary.forEach((itinerary : Itinerary,ind
 
 return () => {
     markers.forEach(marker => marker.remove());
+      if (mapRef.current) {
+      mapRef.current.remove(); // 💡 destroys the map instance
+      mapRef.current = null;   // reset the ref
+    }
 };
     },[tripDetailsInfo])
   return (

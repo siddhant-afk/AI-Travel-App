@@ -53,7 +53,7 @@ function BudgetUI({onSelectedOption} : any ) {
    <div className='grid grid-cols-3 md:grid-cols-3 items-center mt-1 gap-2'>
         { SelectBudgetOptions.map((item,index) =>(
           <div key={index} className='p-3 border rounded-2xl bg-white hover:border-primary cursor-pointer'
-          onClick={() => onSelectedOption(item.title + ":" + item.desc)}>
+          onClick={() => onSelectedOption(item.title + " : " + item.desc)}>
               <h2>{item.icon}</h2>
               <h2>{item.title}</h2>
           </div>
